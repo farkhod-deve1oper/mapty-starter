@@ -134,21 +134,7 @@ function renderActivities() {
             })
         ).setPopupContent(`${typeGenerator(activity.type)} ${activity.date}`).openPopup();
 
-        const html = `
-        <li class="workout workout--${activity.type}" onclick="changeView(${activity.id})">
-            <h2 class="workout__title">${typeGenerator(activity.type)} ${activity.date}</h2>
-            <div class="workout__details">
-                <span class="workout__icon">${activity.type == "running" ? "🏃‍♂️" : "🚴‍♀️"}</span>
-                <span class="workout__value">${activity.distance}</span>
-                <span class="workout__unit">km</span>
-            </div >
-            <div class="workout__details">
-                <span class="workout__icon">⏱</span>
-                <span class="workout__value">${activity.duration}</span>
-                <span class="workout__unit">min</span>
-            </div>
-        </li >
-    `
+        myHTML();
 
         containerWorkouts.insertAdjacentHTML("beforeend", html);
     }

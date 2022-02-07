@@ -13,24 +13,28 @@ let activties = JSON.parse(localStorage.getItem("activities")) || []
 let map;
 let mapEvent;
 
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-        const { latitude, longitude } = position.coords
-
-        map = L.map('map').setView([latitude, longitude], 15);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        renderActivities()
-
-        map.on("click", (event) => {
-            form.classList.remove("hidden")
-            mapEvent = event;
+function myGeolocation(){
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const { latitude, longitude } = position.coords
+    
+            map = L.map('map').setView([latitude, longitude], 15);
+    
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+    
+            renderActivities()
+    
+            map.on("click", (event) => {
+                form.classList.remove("hidden")
+                mapEvent = event;
+            })
         })
-    })
+    }
+
 }
+
 
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -62,22 +66,23 @@ form.addEventListener("submit", (e) => {
         })
     ).setPopupContent(`${typeGenerator(activity.type)} ${activity.date}`).openPopup();
 
-
-    const html = `
-        <li class="workout workout--${activity.type}" onclick="changeView(${activity.id})">
-            <h2 class="workout__title">${typeGenerator(activity.type)} ${activity.date}</h2>
-            <div class="workout__details">
-                <span class="workout__icon">${activity.type == "running" ? "🏃‍♂️" : "🚴‍♀️"}</span>
-                <span class="workout__value">${activity.distance}</span>
-                <span class="workout__unit">km</span>
-            </div >
-            <div class="workout__details">
-                <span class="workout__icon">⏱</span>
-                <span class="workout__value">${activity.duration}</span>
-                <span class="workout__unit">min</span>
-            </div>
-        </li >
-    `
+        function myHtml(){
+            const html = `
+                <li class="workout workout--${activity.type}" onclick="changeView(${activity.id})">
+                    <h2 class="workout__title">${typeGenerator(activity.type)} ${activity.date}</h2>
+                    <div class="workout__details">
+                        <span class="workout__icon">${activity.type == "running" ? "🏃‍♂️" : "🚴‍♀️"}</span>
+                        <span class="workout__value">${activity.distance}</span>
+                        <span class="workout__unit">km</span>
+                    </div >
+                    <div class="workout__details">
+                        <span class="workout__icon">⏱</span>
+                        <span class="workout__value">${activity.duration}</span>
+                        <span class="workout__unit">min</span>
+                    </div>
+                </li >
+            `
+        }
 
     containerWorkouts.insertAdjacentHTML("beforeend", html);
     form.classList.add("hidden");
@@ -105,13 +110,16 @@ function changeView(activityId) {
     map.setView([lat, lng], 15)
 }
 
-document.addEventListener("keyup", ({ key }) => {
-    if (key === "Escape" && form.classList.length == 1) {
-        form.classList.add("hidden");
-        inputDistance.value = ""
-        inputDuration.value = ""
-    }
-})
+function clear(){
+    document.addEventListener("keyup", ({ key }) => {
+        if (key === "Escape" && form.classList.length == 1) {
+            form.classList.add("hidden");
+            inputDistance.value = ""
+            inputDuration.value = ""
+        }
+    })
+}
+
 
 function renderActivities() {
     for (let activity of activties) {

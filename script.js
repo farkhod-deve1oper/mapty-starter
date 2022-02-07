@@ -35,61 +35,63 @@ function myGeolocation(){
 
 }
 
-
-form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    if (!(inputType.value && inputDistance.value && inputDuration.value)) return alert("Malumotlarni Kiriting!")
-
-    const { lat, lng } = mapEvent.latlng;
-
-    let activity = {
-        id: Math.random(),
-        type: inputType.value,
-        date: `${new Date().getDate()} ${months[new Date().getMonth()]}`,
-        duration: inputDuration.value,
-        distance: inputDistance.value,
-        lat: lat,
-        lng: lng
-    }
-
-    activties.push(activity)
-    localStorage.setItem("activities", JSON.stringify(activties))
-
-    L.marker([lat, lng]).addTo(map).bindPopup(
-        L.popup({
-            maxWidth: 250,
-            minWidth: 150,
-            autoClose: false,
-            closeOnClick: false,
-            className: `${activity.type}-popup`
-        })
-    ).setPopupContent(`${typeGenerator(activity.type)} ${activity.date}`).openPopup();
-
-        function myHtml(){
-            const html = `
-                <li class="workout workout--${activity.type}" onclick="changeView(${activity.id})">
-                    <h2 class="workout__title">${typeGenerator(activity.type)} ${activity.date}</h2>
-                    <div class="workout__details">
-                        <span class="workout__icon">${activity.type == "running" ? "🏃‍♂️" : "🚴‍♀️"}</span>
-                        <span class="workout__value">${activity.distance}</span>
-                        <span class="workout__unit">km</span>
-                    </div >
-                    <div class="workout__details">
-                        <span class="workout__icon">⏱</span>
-                        <span class="workout__value">${activity.duration}</span>
-                        <span class="workout__unit">min</span>
-                    </div>
-                </li >
-            `
+function lackOffinfos(){
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+    
+        if (!(inputType.value && inputDistance.value && inputDuration.value)) return alert("Malumotlarni Kiriting!")
+    
+        const { lat, lng } = mapEvent.latlng;
+    
+        let activity = {
+            id: Math.random(),
+            type: inputType.value,
+            date: `${new Date().getDate()} ${months[new Date().getMonth()]}`,
+            duration: inputDuration.value,
+            distance: inputDistance.value,
+            lat: lat,
+            lng: lng
         }
+    
+        activties.push(activity)
+        localStorage.setItem("activities", JSON.stringify(activties))
+    
+        L.marker([lat, lng]).addTo(map).bindPopup(
+            L.popup({
+                maxWidth: 250,
+                minWidth: 150,
+                autoClose: false,
+                closeOnClick: false,
+                className: `${activity.type}-popup`
+            })
+        ).setPopupContent(`${typeGenerator(activity.type)} ${activity.date}`).openPopup();
+    
+            function myHtml(){
+                const html = `
+                    <li class="workout workout--${activity.type}" onclick="changeView(${activity.id})">
+                        <h2 class="workout__title">${typeGenerator(activity.type)} ${activity.date}</h2>
+                        <div class="workout__details">
+                            <span class="workout__icon">${activity.type == "running" ? "🏃‍♂️" : "🚴‍♀️"}</span>
+                            <span class="workout__value">${activity.distance}</span>
+                            <span class="workout__unit">km</span>
+                        </div >
+                        <div class="workout__details">
+                            <span class="workout__icon">⏱</span>
+                            <span class="workout__value">${activity.duration}</span>
+                            <span class="workout__unit">min</span>
+                        </div>
+                    </li >
+                `
+            }
+    
+        containerWorkouts.insertAdjacentHTML("beforeend", html);
+        form.classList.add("hidden");
+        inputDistance.value = ""
+        inputDuration.value = ""
+    
+    })
+}
 
-    containerWorkouts.insertAdjacentHTML("beforeend", html);
-    form.classList.add("hidden");
-    inputDistance.value = ""
-    inputDuration.value = ""
-
-})
 
 function typeGenerator(type) {
     switch (type) {
